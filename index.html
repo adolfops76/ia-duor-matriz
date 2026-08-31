@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=no">
+  <meta name="theme-color" content="#111827">
+  <title>Matriz IA DUOR</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #111827; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overscroll-behavior: none; }
+    #viewport { position: fixed; inset: 0; overflow: hidden; touch-action: none; cursor: grab; background: #111827; }
+    #viewport.dragging { cursor: grabbing; }
+    #matrix {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 7680px;
+      height: 8640px;
+      display: grid;
+      grid-template-columns: repeat(4, 1920px);
+      grid-template-rows: repeat(8, 1080px);
+      gap: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+      background: #fff;
+    }
+    .tile { display: block; width: 1920px; height: 1080px; margin: 0; padding: 0; border: 0; object-fit: fill; user-select: none; pointer-events: none; }
+    .controls {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 12px;
+      background: rgba(17,24,39,.86);
+      color: #fff;
+      box-shadow: 0 8px 28px rgba(0,0,0,.3);
+      backdrop-filter: blur(8px);
+    }
+    .controls button {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 8px;
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      font: 600 21px/1 system-ui, sans-serif;
+      cursor: pointer;
+    }
+    .controls button:hover { background: rgba(255,255,255,.2); }
+    #zoomLabel { min-width: 54px; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .hint {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 10;
+      max-width: min(460px, calc(100vw - 170px));
+      padding: 9px 12px;
+      border-radius: 10px;
+      background: rgba(17,24,39,.82);
+      color: rgba(255,255,255,.84);
+      font-size: 12px;
+      line-height: 1.35;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+    @media (max-width: 700px) { .hint { display: none; } .controls { right: 10px; bottom: 10px; } }
+  </style>
+</head>
+<body>
+  <main id="viewport" aria-label="Visualizador da matriz IA DUOR">
+    <section id="matrix" aria-label="Matriz de imagens 01A a 04H"></section>
+  </main>
+  <div class="hint">Arraste para mover. Roda do mouse percorre a planta; Ctrl + roda aplica zoom. No celular, use um dedo para mover e dois para ampliar.</div>
+  <nav class="controls" aria-label="Controles de zoom">
+    <button id="zoomOut" type="button" aria-label="Diminuir zoom">−</button>
+    <span id="zoomLabel" aria-live="polite">100%</span>
+    <button id="zoomIn" type="button" aria-label="Aumentar zoom">+</button>
+    <button id="fit" type="button" aria-label="Ajustar matriz à tela">⌂</button>
+  </nav>
+  <script>
+    (() => {
+      const viewport = document.getElementById('viewport');
+      const matrix = document.getElementById('matrix');
+      const zoomLabel = document.getElementById('zoomLabel');
+      const rows = 'ABCDEFGH';
+      const available = new Set([
+        '01A','02A','01B','02B','01C','02C','03C',
+        '02D','03D','04D','02E','03E','02F','03F','04F',
+        '02G','03G','04G','03H','04H'
+      ]);
+
+      for (const row of rows) {
+        for (let column = 1; column <= 4; column++) {
+          const key = String(column).padStart(2, '0') + row;
+          const img = document.createElement('img');
+          img.className = 'tile';
+          img.alt = key;
+          img.draggable = false;
+          img.src = available.has(key) ? `${key}.png` : 'Blank.png';
+          img.onerror = () => { img.onerror = null; img.src = 'Blank.png'; };
+          matrix.appendChild(img);
+        }
+      }
+
+      const mapWidth = 7680;
+      const mapHeight = 8640;
+      let scale = 1;
+      let x = 0;
+      let y = 0;
+      let dragging = false;
+      let startX = 0;
+      let startY = 0;
+      let originX = 0;
+      let originY = 0;
+      let pinchDistance = 0;
+      let pinchScale = 1;
+      let pinchCenter = null;
+
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+      function bounds() {
+        const width = mapWidth * scale;
+        const height = mapHeight * scale;
+        return {
+          minX: Math.min(0, viewport.clientWidth - width),
+          maxX: Math.max(0, (viewport.clientWidth - width) / 2),
+          minY: Math.min(0, viewport.clientHeight - height),
+          maxY: Math.max(0, (viewport.clientHeight - height) / 2)
+        };
+      }
+
+      function render() {
+        const b = bounds();
+        x = clamp(x, b.minX, b.maxX);
+        y = clamp(y, b.minY, b.maxY);
+        matrix.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+        zoomLabel.textContent = `${Math.round(scale * 100)}%`;
+      }
+
+      function fit() {
+        scale = clamp(Math.min(viewport.clientWidth / mapWidth, viewport.clientHeight / mapHeight), 0.04, 4);
+        x = (viewport.clientWidth - mapWidth * scale) / 2;
+        y = (viewport.clientHeight - mapHeight * scale) / 2;
+        render();
+      }
+
+      function zoomAt(nextScale, clientX, clientY) {
+        nextScale = clamp(nextScale, 0.04, 4);
+        const mapX = (clientX - x) / scale;
+        const mapY = (clientY - y) / scale;
+        x = clientX - mapX * nextScale;
+        y = clientY - mapY * nextScale;
+        scale = nextScale;
+        render();
+      }
+
+      viewport.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'touch') return;
+        dragging = true;
+        startX = event.clientX;
+        startY = event.clientY;
+        originX = x;
+        originY = y;
+        viewport.classList.add('dragging');
+        viewport.setPointerCapture(event.pointerId);
+      });
+
+      viewport.addEventListener('pointermove', event => {
+        if (!dragging || event.pointerType === 'touch') return;
+        x = originX + event.clientX - startX;
+        y = originY + event.clientY - startY;
+        render();
+      });
+
+      const endDrag = () => { dragging = false; viewport.classList.remove('dragging'); };
+      viewport.addEventListener('pointerup', endDrag);
+      viewport.addEventListener('pointercancel', endDrag);
+
+      viewport.addEventListener('wheel', event => {
+        event.preventDefault();
+        if (event.ctrlKey || event.metaKey) {
+          zoomAt(scale * Math.exp(-event.deltaY * 0.0015), event.clientX, event.clientY);
+        } else if (event.shiftKey) {
+          x -= event.deltaY || event.deltaX;
+          render();
+        } else {
+          y -= event.deltaY;
+          x -= event.deltaX;
+          render();
+        }
+      }, { passive: false });
+
+      viewport.addEventListener('touchstart', event => {
+        event.preventDefault();
+        if (event.touches.length === 1) {
+          dragging = true;
+          startX = event.touches[0].clientX;
+          startY = event.touches[0].clientY;
+          originX = x;
+          originY = y;
+        } else if (event.touches.length === 2) {
+          dragging = false;
+          const [a, b] = event.touches;
+          pinchDistance = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+          pinchScale = scale;
+          pinchCenter = { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
+        }
+      }, { passive: false });
+
+      viewport.addEventListener('touchmove', event => {
+        event.preventDefault();
+        if (event.touches.length === 1 && dragging) {
+          x = originX + event.touches[0].clientX - startX;
+          y = originY + event.touches[0].clientY - startY;
+          render();
+        } else if (event.touches.length === 2 && pinchDistance && pinchCenter) {
+          const [a, b] = event.touches;
+          const distance = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+          const center = { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
+          x += center.x - pinchCenter.x;
+          y += center.y - pinchCenter.y;
+          pinchCenter = center;
+          zoomAt(pinchScale * distance / pinchDistance, center.x, center.y);
+        }
+      }, { passive: false });
+
+      viewport.addEventListener('touchend', event => {
+        if (event.touches.length === 0) { dragging = false; pinchDistance = 0; pinchCenter = null; }
+        if (event.touches.length === 1) {
+          dragging = true;
+          startX = event.touches[0].clientX;
+          startY = event.touches[0].clientY;
+          originX = x;
+          originY = y;
+        }
+      }, { passive: false });
+
+      document.getElementById('zoomIn').addEventListener('click', () => zoomAt(scale * 1.25, viewport.clientWidth / 2, viewport.clientHeight / 2));
+      document.getElementById('zoomOut').addEventListener('click', () => zoomAt(scale / 1.25, viewport.clientWidth / 2, viewport.clientHeight / 2));
+      document.getElementById('fit').addEventListener('click', fit);
+      window.addEventListener('resize', fit);
+      fit();
+    })();
+  </script>
+</body>
+</html>
