@@ -94,7 +94,7 @@
         ['01A.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['01B.png','02B.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['01C.png','02C.png','03C.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
-        ['01D.png','02D.png','03D.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01D.webp','02D.webp','03D.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['01E.png','02E.png','03E.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['VAZIO','02F.png','03F.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','19F.png','20F.png','VAZIO','VAZIO'],
         ['VAZIO','02G.png','03G.png','04G.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','13G.png','14G.png','VAZIO','VAZIO','VAZIO','18G.png','19G.png','20G.png','VAZIO','VAZIO'],
@@ -122,7 +122,7 @@
           }
           const img = document.createElement('img');
           img.className = 'tile';
-          img.alt = fileName.replace('.png', '');
+          img.alt = fileName.replace(/\.(png|webp)$/i, '');
           img.draggable = false;
           img.loading = 'lazy';
           img.decoding = 'async';
