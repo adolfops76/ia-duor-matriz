@@ -94,7 +94,7 @@
         ['01A.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['01B.png','02B.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['01C.png','02C.png','03C.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
-        ['01D.webp','02D.webp','03D.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01D.png','02D.png','03D.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['01E.png','02E.png','03E.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['VAZIO','02F.png','03F.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','19F.png','20F.png','VAZIO','VAZIO'],
         ['VAZIO','02G.png','03G.png','04G.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','13G.png','14G.png','VAZIO','VAZIO','VAZIO','18G.png','19G.png','20G.png','VAZIO','VAZIO'],
@@ -106,170 +106,29 @@
         ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22M.png'],
         ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22N.png']
       ];
-
-      const makeEmpty = () => {
-        const empty = document.createElement('div');
-        empty.className = 'tile-empty';
-        empty.setAttribute('aria-hidden', 'true');
-        return empty;
-      };
-
-      for (const row of matrixData) {
-        for (const fileName of row) {
-          if (fileName === 'VAZIO') {
-            matrix.appendChild(makeEmpty());
-            continue;
-          }
-          const img = document.createElement('img');
-          img.className = 'tile';
-          img.alt = fileName.replace(/\.(png|webp)$/i, '');
-          img.draggable = false;
-          img.loading = 'lazy';
-          img.decoding = 'async';
-          img.src = `assets-v2/${fileName}`;
-          img.onerror = () => img.replaceWith(makeEmpty());
-          matrix.appendChild(img);
-        }
+      const makeEmpty = () => { const empty = document.createElement('div'); empty.className = 'tile-empty'; empty.setAttribute('aria-hidden','true'); return empty; };
+      for (const row of matrixData) for (const fileName of row) {
+        if (fileName === 'VAZIO') { matrix.appendChild(makeEmpty()); continue; }
+        const img = document.createElement('img');
+        img.className='tile'; img.alt=fileName.replace('.png',''); img.draggable=false; img.loading='lazy'; img.decoding='async';
+        img.src=`assets-v2/${fileName}`; img.onerror=()=>img.replaceWith(makeEmpty()); matrix.appendChild(img);
       }
-
-      const mapWidth = 42240;
-      const mapHeight = 15120;
-      let scale = 1;
-      let x = 0;
-      let y = 0;
-      let dragging = false;
-      let startX = 0;
-      let startY = 0;
-      let originX = 0;
-      let originY = 0;
-      let pinchDistance = 0;
-      let pinchScale = 1;
-      let pinchCenter = null;
-
-      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-
-      function bounds() {
-        const width = mapWidth * scale;
-        const height = mapHeight * scale;
-        return {
-          minX: Math.min(0, viewport.clientWidth - width),
-          maxX: Math.max(0, (viewport.clientWidth - width) / 2),
-          minY: Math.min(0, viewport.clientHeight - height),
-          maxY: Math.max(0, (viewport.clientHeight - height) / 2)
-        };
-      }
-
-      function render() {
-        const b = bounds();
-        x = clamp(x, b.minX, b.maxX);
-        y = clamp(y, b.minY, b.maxY);
-        matrix.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
-        zoomLabel.textContent = `${Math.round(scale * 100)}%`;
-      }
-
-      function fit() {
-        scale = clamp(Math.min(viewport.clientWidth / mapWidth, viewport.clientHeight / mapHeight), 0.02, 4);
-        x = (viewport.clientWidth - mapWidth * scale) / 2;
-        y = (viewport.clientHeight - mapHeight * scale) / 2;
-        render();
-      }
-
-      function zoomAt(nextScale, clientX, clientY) {
-        nextScale = clamp(nextScale, 0.02, 4);
-        const mapX = (clientX - x) / scale;
-        const mapY = (clientY - y) / scale;
-        x = clientX - mapX * nextScale;
-        y = clientY - mapY * nextScale;
-        scale = nextScale;
-        render();
-      }
-
-      viewport.addEventListener('pointerdown', event => {
-        if (event.pointerType === 'touch') return;
-        dragging = true;
-        startX = event.clientX;
-        startY = event.clientY;
-        originX = x;
-        originY = y;
-        viewport.classList.add('dragging');
-        viewport.setPointerCapture(event.pointerId);
-      });
-
-      viewport.addEventListener('pointermove', event => {
-        if (!dragging || event.pointerType === 'touch') return;
-        x = originX + event.clientX - startX;
-        y = originY + event.clientY - startY;
-        render();
-      });
-
-      const endDrag = () => { dragging = false; viewport.classList.remove('dragging'); };
-      viewport.addEventListener('pointerup', endDrag);
-      viewport.addEventListener('pointercancel', endDrag);
-
-      viewport.addEventListener('wheel', event => {
-        event.preventDefault();
-        if (event.ctrlKey || event.metaKey) {
-          zoomAt(scale * Math.exp(-event.deltaY * 0.0015), event.clientX, event.clientY);
-        } else if (event.shiftKey) {
-          x -= event.deltaY || event.deltaX;
-          render();
-        } else {
-          y -= event.deltaY;
-          x -= event.deltaX;
-          render();
-        }
-      }, { passive: false });
-
-      viewport.addEventListener('touchstart', event => {
-        event.preventDefault();
-        if (event.touches.length === 1) {
-          dragging = true;
-          startX = event.touches[0].clientX;
-          startY = event.touches[0].clientY;
-          originX = x;
-          originY = y;
-        } else if (event.touches.length === 2) {
-          dragging = false;
-          const [a, b] = event.touches;
-          pinchDistance = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
-          pinchScale = scale;
-          pinchCenter = { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
-        }
-      }, { passive: false });
-
-      viewport.addEventListener('touchmove', event => {
-        event.preventDefault();
-        if (event.touches.length === 1 && dragging) {
-          x = originX + event.touches[0].clientX - startX;
-          y = originY + event.touches[0].clientY - startY;
-          render();
-        } else if (event.touches.length === 2 && pinchDistance && pinchCenter) {
-          const [a, b] = event.touches;
-          const distance = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
-          const center = { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
-          x += center.x - pinchCenter.x;
-          y += center.y - pinchCenter.y;
-          pinchCenter = center;
-          zoomAt(pinchScale * distance / pinchDistance, center.x, center.y);
-        }
-      }, { passive: false });
-
-      viewport.addEventListener('touchend', event => {
-        if (event.touches.length === 0) { dragging = false; pinchDistance = 0; pinchCenter = null; }
-        if (event.touches.length === 1) {
-          dragging = true;
-          startX = event.touches[0].clientX;
-          startY = event.touches[0].clientY;
-          originX = x;
-          originY = y;
-        }
-      }, { passive: false });
-
-      document.getElementById('zoomIn').addEventListener('click', () => zoomAt(scale * 1.25, viewport.clientWidth / 2, viewport.clientHeight / 2));
-      document.getElementById('zoomOut').addEventListener('click', () => zoomAt(scale / 1.25, viewport.clientWidth / 2, viewport.clientHeight / 2));
-      document.getElementById('fit').addEventListener('click', fit);
-      window.addEventListener('resize', fit);
-      fit();
+      const mapWidth=42240, mapHeight=15120; let scale=1,x=0,y=0,dragging=false,startX=0,startY=0,originX=0,originY=0,pinchDistance=0,pinchScale=1,pinchCenter=null;
+      const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
+      function bounds(){const width=mapWidth*scale,height=mapHeight*scale;return{minX:Math.min(0,viewport.clientWidth-width),maxX:Math.max(0,(viewport.clientWidth-width)/2),minY:Math.min(0,viewport.clientHeight-height),maxY:Math.max(0,(viewport.clientHeight-height)/2)}}
+      function render(){const b=bounds();x=clamp(x,b.minX,b.maxX);y=clamp(y,b.minY,b.maxY);matrix.style.transform=`translate3d(${x}px, ${y}px, 0) scale(${scale})`;zoomLabel.textContent=`${Math.round(scale*100)}%`;}
+      function fit(){scale=clamp(Math.min(viewport.clientWidth/mapWidth,viewport.clientHeight/mapHeight),0.02,4);x=(viewport.clientWidth-mapWidth*scale)/2;y=(viewport.clientHeight-mapHeight*scale)/2;render();}
+      function zoomAt(nextScale,clientX,clientY){nextScale=clamp(nextScale,0.02,4);const mapX=(clientX-x)/scale,mapY=(clientY-y)/scale;x=clientX-mapX*nextScale;y=clientY-mapY*nextScale;scale=nextScale;render();}
+      viewport.addEventListener('pointerdown',event=>{if(event.pointerType==='touch')return;dragging=true;startX=event.clientX;startY=event.clientY;originX=x;originY=y;viewport.classList.add('dragging');viewport.setPointerCapture(event.pointerId);});
+      viewport.addEventListener('pointermove',event=>{if(!dragging||event.pointerType==='touch')return;x=originX+event.clientX-startX;y=originY+event.clientY-startY;render();});
+      const endDrag=()=>{dragging=false;viewport.classList.remove('dragging');}; viewport.addEventListener('pointerup',endDrag);viewport.addEventListener('pointercancel',endDrag);
+      viewport.addEventListener('wheel',event=>{event.preventDefault();if(event.ctrlKey||event.metaKey)zoomAt(scale*Math.exp(-event.deltaY*0.0015),event.clientX,event.clientY);else if(event.shiftKey){x-=event.deltaY||event.deltaX;render();}else{y-=event.deltaY;x-=event.deltaX;render();}},{passive:false});
+      viewport.addEventListener('touchstart',event=>{event.preventDefault();if(event.touches.length===1){dragging=true;startX=event.touches[0].clientX;startY=event.touches[0].clientY;originX=x;originY=y;}else if(event.touches.length===2){dragging=false;const[a,b]=event.touches;pinchDistance=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);pinchScale=scale;pinchCenter={x:(a.clientX+b.clientX)/2,y:(a.clientY+b.clientY)/2};}},{passive:false});
+      viewport.addEventListener('touchmove',event=>{event.preventDefault();if(event.touches.length===1&&dragging){x=originX+event.touches[0].clientX-startX;y=originY+event.touches[0].clientY-startY;render();}else if(event.touches.length===2&&pinchDistance&&pinchCenter){const[a,b]=event.touches;const distance=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY),center={x:(a.clientX+b.clientX)/2,y:(a.clientY+b.clientY)/2};x+=center.x-pinchCenter.x;y+=center.y-pinchCenter.y;pinchCenter=center;zoomAt(pinchScale*distance/pinchDistance,center.x,center.y);}},{passive:false});
+      viewport.addEventListener('touchend',event=>{if(event.touches.length===0){dragging=false;pinchDistance=0;pinchCenter=null;}if(event.touches.length===1){dragging=true;startX=event.touches[0].clientX;startY=event.touches[0].clientY;originX=x;originY=y;}},{passive:false});
+      document.getElementById('zoomIn').addEventListener('click',()=>zoomAt(scale*1.25,viewport.clientWidth/2,viewport.clientHeight/2));
+      document.getElementById('zoomOut').addEventListener('click',()=>zoomAt(scale/1.25,viewport.clientWidth/2,viewport.clientHeight/2));
+      document.getElementById('fit').addEventListener('click',fit); window.addEventListener('resize',fit); fit();
     })();
   </script>
 </body>
