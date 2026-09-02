@@ -28,6 +28,17 @@
     .tile, .tile-empty { display: block; width: 1920px; height: 1080px; margin: 0; padding: 0; border: 0; }
     .tile { object-fit: fill; user-select: none; pointer-events: none; }
     .tile-empty { background: transparent; }
+    .cad-overlay {
+      position: absolute;
+      z-index: 2;
+      display: block;
+      width: 1920px;
+      height: 1080px;
+      object-fit: fill;
+      pointer-events: none;
+      user-select: none;
+    }
+    #overlay03E { left: 3840px; top: 4320px; }
     #columnLabels {
       position: fixed;
       top: 0;
@@ -140,7 +151,9 @@
   <div id="columnLabels" aria-hidden="true"></div>
   <div id="rowLabels" aria-hidden="true"></div>
   <main id="viewport" aria-label="Visualizador da matriz IA DUOR">
-    <section id="matrix" aria-label="Matriz de imagens definida pela planilha IA DUOR"></section>
+    <section id="matrix" aria-label="Matriz de imagens definida pela planilha IA DUOR">
+      <img id="overlay03E" class="cad-overlay" src="layers/03E.svg" alt="" aria-hidden="true">
+    </section>
   </main>
   <div class="hint">Arraste para mover. Roda do mouse percorre a planta; Ctrl + roda aplica zoom. No celular, use um dedo para mover e dois para ampliar.</div>
   <nav class="controls" aria-label="Controles de zoom">
