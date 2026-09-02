@@ -28,6 +28,67 @@
     .tile, .tile-empty { display: block; width: 1920px; height: 1080px; margin: 0; padding: 0; border: 0; }
     .tile { object-fit: fill; user-select: none; pointer-events: none; }
     .tile-empty { background: transparent; }
+    #columnLabels {
+      position: fixed;
+      top: 0;
+      left: 46px;
+      right: 0;
+      height: 34px;
+      z-index: 20;
+      overflow: hidden;
+      pointer-events: none;
+      background: rgba(17,24,39,.92);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.28);
+    }
+    #rowLabels {
+      position: fixed;
+      top: 34px;
+      left: 0;
+      bottom: 0;
+      width: 46px;
+      z-index: 20;
+      overflow: hidden;
+      pointer-events: none;
+      background: rgba(17,24,39,.92);
+      color: #fff;
+      box-shadow: 2px 0 8px rgba(0,0,0,.28);
+    }
+    #axisCorner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 46px;
+      height: 34px;
+      z-index: 21;
+      border-right: 1px solid rgba(255,255,255,.24);
+      border-bottom: 1px solid rgba(255,255,255,.24);
+      background: #111827;
+      pointer-events: none;
+    }
+    .axis-label {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: rgba(255,255,255,.94);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(0,0,0,.45);
+    }
+    .column-label {
+      top: 0;
+      height: 34px;
+      border-right: 1px solid rgba(255,255,255,.22);
+    }
+    .row-label {
+      left: 0;
+      width: 46px;
+      border-bottom: 1px solid rgba(255,255,255,.22);
+    }
     .controls {
       position: fixed;
       right: 16px;
@@ -75,6 +136,9 @@
   </style>
 </head>
 <body>
+  <div id="axisCorner" aria-hidden="true"></div>
+  <div id="columnLabels" aria-hidden="true"></div>
+  <div id="rowLabels" aria-hidden="true"></div>
   <main id="viewport" aria-label="Visualizador da matriz IA DUOR">
     <section id="matrix" aria-label="Matriz de imagens definida pela planilha IA DUOR"></section>
   </main>
@@ -90,6 +154,23 @@
       const viewport = document.getElementById('viewport');
       const matrix = document.getElementById('matrix');
       const zoomLabel = document.getElementById('zoomLabel');
+      const columnLabels = document.getElementById('columnLabels');
+      const rowLabels = document.getElementById('rowLabels');
+      const axisWidth = 46, axisHeight = 34;
+      const columnLabelElements = Array.from({length:22},(_,index)=>{
+        const label=document.createElement('div');
+        label.className='axis-label column-label';
+        label.textContent=String(index+1).padStart(2,'0');
+        columnLabels.appendChild(label);
+        return label;
+      });
+      const rowLabelElements = Array.from({length:14},(_,index)=>{
+        const label=document.createElement('div');
+        label.className='axis-label row-label';
+        label.textContent=String.fromCharCode(65+index);
+        rowLabels.appendChild(label);
+        return label;
+      });
       const matrixData = [
         ['01A.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
         ['01B.webp','02B.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
@@ -116,7 +197,22 @@
       const mapWidth=42240, mapHeight=15120; let scale=1,x=0,y=0,dragging=false,startX=0,startY=0,originX=0,originY=0,pinchDistance=0,pinchScale=1,pinchCenter=null;
       const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
       function bounds(){const width=mapWidth*scale,height=mapHeight*scale;return{minX:Math.min(0,viewport.clientWidth-width),maxX:Math.max(0,(viewport.clientWidth-width)/2),minY:Math.min(0,viewport.clientHeight-height),maxY:Math.max(0,(viewport.clientHeight-height)/2)}}
-      function render(){const b=bounds();x=clamp(x,b.minX,b.maxX);y=clamp(y,b.minY,b.maxY);matrix.style.transform=`translate3d(${x}px, ${y}px, 0) scale(${scale})`;zoomLabel.textContent=`${Math.round(scale*100)}%`;}
+      function updateAxisLabels(){
+        const cellWidth=1920*scale,cellHeight=1080*scale;
+        columnLabelElements.forEach((label,index)=>{
+          const cellLeft=x+index*cellWidth,cellRight=cellLeft+cellWidth;
+          const visibleLeft=Math.max(axisWidth,cellLeft),visibleRight=Math.min(viewport.clientWidth,cellRight);
+          if(visibleRight<=visibleLeft){label.style.display='none';return;}
+          label.style.display='flex';label.style.left=`${visibleLeft-axisWidth}px`;label.style.width=`${visibleRight-visibleLeft}px`;
+        });
+        rowLabelElements.forEach((label,index)=>{
+          const cellTop=y+index*cellHeight,cellBottom=cellTop+cellHeight;
+          const visibleTop=Math.max(axisHeight,cellTop),visibleBottom=Math.min(viewport.clientHeight,cellBottom);
+          if(visibleBottom<=visibleTop){label.style.display='none';return;}
+          label.style.display='flex';label.style.top=`${visibleTop-axisHeight}px`;label.style.height=`${visibleBottom-visibleTop}px`;
+        });
+      }
+      function render(){const b=bounds();x=clamp(x,b.minX,b.maxX);y=clamp(y,b.minY,b.maxY);matrix.style.transform=`translate3d(${x}px, ${y}px, 0) scale(${scale})`;zoomLabel.textContent=`${Math.round(scale*100)}%`;updateAxisLabels();}
       function fit(){scale=clamp(Math.min(viewport.clientWidth/mapWidth,viewport.clientHeight/mapHeight),0.02,4);x=(viewport.clientWidth-mapWidth*scale)/2;y=(viewport.clientHeight-mapHeight*scale)/2;render();}
       function zoomAt(nextScale,clientX,clientY){nextScale=clamp(nextScale,0.02,4);const mapX=(clientX-x)/scale,mapY=(clientY-y)/scale;x=clientX-mapX*nextScale;y=clientY-mapY*nextScale;scale=nextScale;render();}
       viewport.addEventListener('pointerdown',event=>{if(event.pointerType==='touch')return;dragging=true;startX=event.clientX;startY=event.clientY;originX=x;originY=y;viewport.classList.add('dragging');viewport.setPointerCapture(event.pointerId);});
