@@ -91,20 +91,20 @@
       const matrix = document.getElementById('matrix');
       const zoomLabel = document.getElementById('zoomLabel');
       const matrixData = [
-        ['01A.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
-        ['01B.png','02B.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
-        ['01C.png','02C.png','03C.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
-        ['01D.png','02D.png','03D.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
-        ['01E.png','02E.png','03E.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
-        ['VAZIO','02F.png','03F.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','19F.png','20F.png','VAZIO','VAZIO'],
-        ['VAZIO','02G.png','03G.png','04G.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','13G.png','14G.png','VAZIO','VAZIO','VAZIO','18G.png','19G.png','20G.png','VAZIO','VAZIO'],
-        ['VAZIO','VAZIO','03H.png','04H.png','05H.png','06H.png','07H.png','08H.png','VAZIO','VAZIO','VAZIO','12H.png','13H.png','14H.png','15H.png','VAZIO','17H.png','18H.png','19H.png','20H.png','21H.png','VAZIO'],
-        ['VAZIO','VAZIO','VAZIO','VAZIO','05I.png','06I.png','07I.png','08I.png','09I.png','VAZIO','11I.png','12I.png','13I.png','14I.png','15I.png','VAZIO','17I.png','VAZIO','VAZIO','20I.png','21I.png','VAZIO'],
-        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','07J.png','08J.png','09J.png','10J.png','11J.png','12J.png','VAZIO','14J.png','15J.png','16J.png','17J.png','18J.png','VAZIO','20J.png','21J.png','22J.png'],
-        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','08K.png','09K.png','10K.png','11K.png','12K.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22K.png'],
-        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22L.png'],
-        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22M.png'],
-        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22N.png']
+        ['01A.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01B.webp','02B.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01C.webp','02C.webp','03C.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01D.webp','02D.webp','03D.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01E.webp','02E.webp','03E.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['VAZIO','02F.webp','03F.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','19F.webp','20F.webp','VAZIO','VAZIO'],
+        ['VAZIO','02G.webp','03G.webp','04G.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','13G.webp','14G.webp','VAZIO','VAZIO','VAZIO','18G.webp','19G.webp','20G.webp','VAZIO','VAZIO'],
+        ['VAZIO','VAZIO','03H.webp','04H.webp','05H.webp','06H.webp','07H.webp','08H.webp','VAZIO','VAZIO','VAZIO','12H.webp','13H.webp','14H.webp','15H.webp','VAZIO','17H.webp','18H.webp','19H.webp','20H.webp','21H.webp','VAZIO'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','05I.webp','06I.webp','07I.webp','08I.webp','09I.webp','VAZIO','11I.webp','12I.webp','13I.webp','14I.webp','15I.webp','VAZIO','17I.webp','VAZIO','VAZIO','20I.webp','21I.webp','VAZIO'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','07J.webp','08J.webp','09J.webp','10J.webp','11J.webp','12J.webp','VAZIO','14J.webp','15J.webp','16J.webp','17J.webp','18J.webp','VAZIO','20J.webp','21J.webp','22J.webp'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','08K.webp','09K.webp','10K.webp','11K.webp','12K.webp','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22K.webp'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22L.webp'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22M.webp'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22N.webp']
       ];
       const makeEmpty = () => { const empty = document.createElement('div'); empty.className = 'tile-empty'; empty.setAttribute('aria-hidden','true'); return empty; };
       for (const row of matrixData) for (const fileName of row) {
