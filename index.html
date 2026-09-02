@@ -15,17 +15,19 @@
       position: absolute;
       left: 0;
       top: 0;
-      width: 7680px;
-      height: 8640px;
+      width: 42240px;
+      height: 15120px;
       display: grid;
-      grid-template-columns: repeat(4, 1920px);
-      grid-template-rows: repeat(8, 1080px);
+      grid-template-columns: repeat(22, 1920px);
+      grid-template-rows: repeat(14, 1080px);
       gap: 0;
       transform-origin: 0 0;
       will-change: transform;
       background: #fff;
     }
-    .tile { display: block; width: 1920px; height: 1080px; margin: 0; padding: 0; border: 0; object-fit: fill; user-select: none; pointer-events: none; }
+    .tile, .tile-empty { display: block; width: 1920px; height: 1080px; margin: 0; padding: 0; border: 0; }
+    .tile { object-fit: fill; user-select: none; pointer-events: none; }
+    .tile-empty { background: transparent; }
     .controls {
       position: fixed;
       right: 16px;
@@ -74,7 +76,7 @@
 </head>
 <body>
   <main id="viewport" aria-label="Visualizador da matriz IA DUOR">
-    <section id="matrix" aria-label="Matriz de imagens 01A a 04H"></section>
+    <section id="matrix" aria-label="Matriz de imagens definida pela planilha IA DUOR"></section>
   </main>
   <div class="hint">Arraste para mover. Roda do mouse percorre a planta; Ctrl + roda aplica zoom. No celular, use um dedo para mover e dois para ampliar.</div>
   <nav class="controls" aria-label="Controles de zoom">
@@ -88,28 +90,50 @@
       const viewport = document.getElementById('viewport');
       const matrix = document.getElementById('matrix');
       const zoomLabel = document.getElementById('zoomLabel');
-      const rows = 'ABCDEFGH';
-      const available = new Set([
-        '01A','02A','01B','02B','01C','02C','03C',
-        '02D','03D','04D','02E','03E','02F','03F','04F',
-        '02G','03G','04G','03H','04H'
-      ]);
+      const matrixData = [
+        ['01A.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01B.png','02B.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01C.png','02C.png','03C.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['01E.png','02E.png','03E.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO'],
+        ['VAZIO','02F.png','03F.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','19F.png','20F.png','VAZIO','VAZIO'],
+        ['VAZIO','02G.png','03G.png','04G.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','13G.png','14G.png','VAZIO','VAZIO','VAZIO','18G.png','19G.png','20G.png','VAZIO','VAZIO'],
+        ['VAZIO','VAZIO','03H.png','04H.png','05H.png','06H.png','07H.png','08H.png','VAZIO','VAZIO','VAZIO','12H.png','13H.png','14H.png','15H.png','VAZIO','17H.png','18H.png','19H.png','20H.png','21H.png','VAZIO'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','05I.png','06I.png','07I.png','08I.png','09I.png','VAZIO','11I.png','12I.png','13I.png','14I.png','15I.png','VAZIO','17I.png','VAZIO','VAZIO','20I.png','21I.png','VAZIO'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','07J.png','08J.png','09J.png','10J.png','11J.png','12J.png','VAZIO','14J.png','15J.png','16J.png','17J.png','18J.png','VAZIO','20J.png','21J.png','22J.png'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','08K.png','09K.png','10K.png','11K.png','12K.png','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22K.png'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22L.png'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22M.png'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22N.png'],
+        ['VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','VAZIO','22O.png']
+      ];
 
-      for (const row of rows) {
-        for (let column = 1; column <= 4; column++) {
-          const key = String(column).padStart(2, '0') + row;
+      const makeEmpty = () => {
+        const empty = document.createElement('div');
+        empty.className = 'tile-empty';
+        empty.setAttribute('aria-hidden', 'true');
+        return empty;
+      };
+
+      for (const row of matrixData) {
+        for (const fileName of row) {
+          if (fileName === 'VAZIO') {
+            matrix.appendChild(makeEmpty());
+            continue;
+          }
           const img = document.createElement('img');
           img.className = 'tile';
-          img.alt = key;
+          img.alt = fileName.replace('.png', '');
           img.draggable = false;
-          img.src = available.has(key) ? `${key}.png` : 'Blank.png';
-          img.onerror = () => { img.onerror = null; img.src = 'Blank.png'; };
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.src = `assets-v2/${fileName}`;
+          img.onerror = () => img.replaceWith(makeEmpty());
           matrix.appendChild(img);
         }
       }
 
-      const mapWidth = 7680;
-      const mapHeight = 8640;
+      const mapWidth = 42240;
+      const mapHeight = 15120;
       let scale = 1;
       let x = 0;
       let y = 0;
@@ -144,14 +168,14 @@
       }
 
       function fit() {
-        scale = clamp(Math.min(viewport.clientWidth / mapWidth, viewport.clientHeight / mapHeight), 0.04, 4);
+        scale = clamp(Math.min(viewport.clientWidth / mapWidth, viewport.clientHeight / mapHeight), 0.02, 4);
         x = (viewport.clientWidth - mapWidth * scale) / 2;
         y = (viewport.clientHeight - mapHeight * scale) / 2;
         render();
       }
 
       function zoomAt(nextScale, clientX, clientY) {
-        nextScale = clamp(nextScale, 0.04, 4);
+        nextScale = clamp(nextScale, 0.02, 4);
         const mapX = (clientX - x) / scale;
         const mapY = (clientY - y) / scale;
         x = clientX - mapX * nextScale;
