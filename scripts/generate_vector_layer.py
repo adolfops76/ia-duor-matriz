@@ -14,11 +14,14 @@ from ezdxf.path import make_path
 DXF_PATH = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("004z DUTOS ARMÁRIOS 2.dxf")
 OUTPUT_PATH = Path("layers/dutos-armarios.svg")
 
-# The raster matrix is 22 x 14 cells. Each 1920 x 1080 tile represents
-# 500 x 281.25 drawing units. Y is inverted when converting CAD to screen.
+# The raster matrix is 22 x 14 cells. The reference span runs from the
+# upper-left corner of 01A to the upper-right corner of 22A. Y is inverted
+# when converting CAD coordinates to screen coordinates.
 MAP_WIDTH = 42240
 MAP_HEIGHT = 15120
-PX_PER_UNIT = 3.84
+REFERENCE_END_X = 245507.6571
+REFERENCE_END_Y = 390262.3884
+PX_PER_UNIT = 1.0
 
 # Populated from the center of the SVG_REFERENCIA circle in the source DXF.
 CAD_LEFT = 0.0
@@ -106,7 +109,7 @@ def equipment_metadata(insert) -> tuple[str, str, str]:
 
 
 def main() -> None:
-    global CAD_LEFT, CAD_TOP
+    global CAD_LEFT, CAD_TOP, PX_PER_UNIT
     document = ezdxf.readfile(DXF_PATH)
     modelspace = document.modelspace()
 
@@ -114,13 +117,33 @@ def main() -> None:
         entity for entity in modelspace.query("CIRCLE")
         if entity.dxf.layer.upper().rstrip(". ") == "SVG_REFERENCIA"
     ]
-    if len(reference_circles) != 1:
+    if not reference_circles:
         raise RuntimeError(
-            f"Expected exactly one SVG_REFERENCIA circle, found {len(reference_circles)}"
+            "Expected at least one SVG_REFERENCIA circle, found none"
         )
-    reference_center = reference_circles[0].dxf.center
-    CAD_LEFT = float(reference_center.x)
-    CAD_TOP = float(reference_center.y)
+    reference_circles.sort(key=lambda entity: float(entity.dxf.center.x))
+    start = reference_circles[0].dxf.center
+    CAD_LEFT = float(start.x)
+    CAD_TOP = float(start.y)
+
+    if len(reference_circles) >= 2:
+        end = reference_circles[-1].dxf.center
+        end_x = float(end.x)
+        end_y = float(end.y)
+        end_source = "DXF circle"
+    else:
+        end_x = REFERENCE_END_X
+        end_y = REFERENCE_END_Y
+        end_source = "declared 22A endpoint"
+
+    if abs(end_y - CAD_TOP) > 0.01:
+        raise RuntimeError(
+            f"Reference points are not horizontally aligned: {CAD_TOP} vs {end_y}"
+        )
+    span = end_x - CAD_LEFT
+    if span <= 0:
+        raise RuntimeError(f"Invalid horizontal reference span: {span}")
+    PX_PER_UNIT = MAP_WIDTH / span
 
     duct_groups = {
         "00 - FM22195-Q01 - BANCO DE DUTOS LONGITUDINAL": ("dutos-longitudinais", "duto-longitudinal", "duto longitudinal"),
@@ -133,7 +156,9 @@ def main() -> None:
         '<?xml version="1.0" encoding="UTF-8"?>',
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {MAP_WIDTH} {MAP_HEIGHT}" '
         f'data-cad-origin-x="{CAD_LEFT:.10f}" data-cad-origin-y="{CAD_TOP:.10f}" '
-        f'data-pixels-per-unit="{PX_PER_UNIT}" role="img" aria-label="Dutos e armários de sinalização">',
+        f'data-cad-reference-end-x="{end_x:.10f}" data-cad-reference-end-y="{end_y:.10f}" '
+        f'data-reference-end-source="{end_source}" data-pixels-per-unit="{PX_PER_UNIT:.12f}" '
+        f'role="img" aria-label="Dutos e armários de sinalização">',
         "<style>",
         ".vetor{fill:none;stroke-linecap:round;stroke-linejoin:round}",
         ".duto-longitudinal{stroke:#0ea5e9;stroke-width:7}",
@@ -188,7 +213,8 @@ def main() -> None:
     OUTPUT_PATH.write_text("\n".join(svg), encoding="utf-8")
     print(
         f"Generated {OUTPUT_PATH} with {object_index} interactive equipment objects; "
-        f"origin=({CAD_LEFT:.10f}, {CAD_TOP:.10f})"
+        f"origin=({CAD_LEFT:.10f}, {CAD_TOP:.10f}); "
+        f"end=({end_x:.10f}, {end_y:.10f}) [{end_source}]; scale={PX_PER_UNIT:.12f}"
     )
 
 
