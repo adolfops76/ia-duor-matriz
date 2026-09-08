@@ -4,22 +4,25 @@
 from __future__ import annotations
 
 import html
+import sys
 from pathlib import Path
 
 import ezdxf
 from ezdxf.path import make_path
 
 
-DXF_PATH = Path("/workspace/scratch/ia-duor-vector/004z_DUTOS_ARMARIOS_2.dxf")
+DXF_PATH = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("004z DUTOS ARMÁRIOS 2.dxf")
 OUTPUT_PATH = Path("layers/dutos-armarios.svg")
 
 # The raster matrix is 22 x 14 cells. Each 1920 x 1080 tile represents
 # 500 x 281.25 drawing units. Y is inverted when converting CAD to screen.
 MAP_WIDTH = 42240
 MAP_HEIGHT = 15120
-CAD_LEFT = 234800.0
-CAD_TOP = 390300.0
 PX_PER_UNIT = 3.84
+
+# Populated from the center of the SVG_REFERENCIA circle in the source DXF.
+CAD_LEFT = 0.0
+CAD_TOP = 0.0
 
 
 def xy(point) -> tuple[float, float]:
@@ -103,8 +106,21 @@ def equipment_metadata(insert) -> tuple[str, str, str]:
 
 
 def main() -> None:
+    global CAD_LEFT, CAD_TOP
     document = ezdxf.readfile(DXF_PATH)
     modelspace = document.modelspace()
+
+    reference_circles = [
+        entity for entity in modelspace.query("CIRCLE")
+        if entity.dxf.layer.upper().rstrip(". ") == "SVG_REFERENCIA"
+    ]
+    if len(reference_circles) != 1:
+        raise RuntimeError(
+            f"Expected exactly one SVG_REFERENCIA circle, found {len(reference_circles)}"
+        )
+    reference_center = reference_circles[0].dxf.center
+    CAD_LEFT = float(reference_center.x)
+    CAD_TOP = float(reference_center.y)
 
     duct_groups = {
         "00 - FM22195-Q01 - BANCO DE DUTOS LONGITUDINAL": ("dutos-longitudinais", "duto-longitudinal", "duto longitudinal"),
@@ -115,7 +131,9 @@ def main() -> None:
 
     svg: list[str] = [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {MAP_WIDTH} {MAP_HEIGHT}" role="img" aria-label="Dutos e armários de sinalização">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {MAP_WIDTH} {MAP_HEIGHT}" '
+        f'data-cad-origin-x="{CAD_LEFT:.10f}" data-cad-origin-y="{CAD_TOP:.10f}" '
+        f'data-pixels-per-unit="{PX_PER_UNIT}" role="img" aria-label="Dutos e armários de sinalização">',
         "<style>",
         ".vetor{fill:none;stroke-linecap:round;stroke-linejoin:round}",
         ".duto-longitudinal{stroke:#0ea5e9;stroke-width:7}",
@@ -168,7 +186,10 @@ def main() -> None:
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text("\n".join(svg), encoding="utf-8")
-    print(f"Generated {OUTPUT_PATH} with {object_index} interactive equipment objects")
+    print(
+        f"Generated {OUTPUT_PATH} with {object_index} interactive equipment objects; "
+        f"origin=({CAD_LEFT:.10f}, {CAD_TOP:.10f})"
+    )
 
 
 if __name__ == "__main__":
