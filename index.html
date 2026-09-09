@@ -266,7 +266,6 @@
         'sector-3':{start:15,end:22},
         full:{start:0,end:22}
       };
-      const savedViews={};
       let activeView='full',scale=1,x=0,y=0,dragging=false,startX=0,startY=0,originX=0,originY=0,pinchDistance=0,pinchScale=1,pinchCenter=null;
       const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
       function bounds(){const width=mapWidth*scale,height=mapHeight*scale;return{minX:Math.min(0,viewport.clientWidth-width),maxX:Math.max(0,(viewport.clientWidth-width)/2),minY:Math.min(0,viewport.clientHeight-height),maxY:Math.max(0,(viewport.clientHeight-height)/2)}}
@@ -288,20 +287,17 @@
       function render(){const b=bounds();x=clamp(x,b.minX,b.maxX);y=clamp(y,b.minY,b.maxY);matrix.style.transform=`translate3d(${x}px, ${y}px, 0) scale(${scale})`;zoomLabel.textContent=`${Math.round(scale*100)}%`;updateAxisLabels();}
       function fit(){scale=clamp(Math.min(viewport.clientWidth/mapWidth,viewport.clientHeight/mapHeight),0.02,4);x=(viewport.clientWidth-mapWidth*scale)/2;y=(viewport.clientHeight-mapHeight*scale)/2;render();}
       function updateSectorButtons(){sectorButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.view===activeView)));}
-      function openView(viewName,forceFit=false){
+      function openView(viewName){
         if(!views[viewName])return;
-        savedViews[activeView]={scale,x,y};
+        const previousMapCenterY=(viewport.clientHeight/2-y)/scale;
         activeView=viewName;
-        if(!forceFit&&savedViews[viewName]){
-          ({scale,x,y}=savedViews[viewName]);
-        }else if(viewName==='full'){
+        if(viewName==='full'){
           scale=clamp(Math.min(viewport.clientWidth/mapWidth,viewport.clientHeight/mapHeight),0.02,4);
           x=(viewport.clientWidth-mapWidth*scale)/2;
           y=(viewport.clientHeight-mapHeight*scale)/2;
         }else{
           const view=views[viewName],startX=view.start*1920,endX=view.end*1920,sectorWidth=endX-startX;
-          const previousMapCenterY=(viewport.clientHeight/2-y)/scale;
-          scale=clamp((viewport.clientWidth-72)/sectorWidth,0.02,4);
+          scale=clamp((viewport.clientWidth-72)/(8*1920),0.02,4);
           x=viewport.clientWidth/2-(startX+sectorWidth/2)*scale;
           y=viewport.clientHeight/2-previousMapCenterY*scale;
         }
@@ -317,9 +313,9 @@
       viewport.addEventListener('touchend',event=>{if(event.touches.length===0){dragging=false;pinchDistance=0;pinchCenter=null;}if(event.touches.length===1){dragging=true;startX=event.touches[0].clientX;startY=event.touches[0].clientY;originX=x;originY=y;}},{passive:false});
       document.getElementById('zoomIn').addEventListener('click',()=>zoomAt(scale*1.25,viewport.clientWidth/2,viewport.clientHeight/2));
       document.getElementById('zoomOut').addEventListener('click',()=>zoomAt(scale/1.25,viewport.clientWidth/2,viewport.clientHeight/2));
-      document.getElementById('fit').addEventListener('click',()=>openView(activeView,true));
+      document.getElementById('fit').addEventListener('click',()=>openView(activeView));
       sectorButtons.forEach(button=>button.addEventListener('click',()=>openView(button.dataset.view)));
-      window.addEventListener('resize',()=>openView(activeView,true)); fit();
+      window.addEventListener('resize',()=>openView(activeView)); fit();
       vectorToggle.addEventListener('click',()=>{
         const hidden=vectorLayer.classList.toggle('is-hidden');
         vectorToggle.setAttribute('aria-pressed',String(!hidden));
