@@ -190,7 +190,7 @@
   <div id="rowLabels" aria-hidden="true"></div>
   <main id="viewport" aria-label="Visualizador da matriz IA DUOR">
     <section id="matrix" aria-label="Matriz de imagens definida pela planilha IA DUOR">
-      <div id="vectorLayer" class="vector-overlay" aria-label="Camada vetorial de dutos e armários"></div>
+      <div id="vectorLayer" class="vector-overlay" aria-label="Camada vetorial de armários"></div>
     </section>
   </main>
   <nav class="sector-controls" aria-label="Navegação por setores da matriz">
@@ -255,7 +255,7 @@
         img.className='tile'; img.alt=fileName.replace(/\.(png|webp)$/i,''); img.draggable=false; img.loading='lazy'; img.decoding='async';
         img.src=`assets-v2/${fileName}`; img.onerror=()=>img.replaceWith(makeEmpty()); matrix.appendChild(img);
       }
-      fetch('layers/dutos-armarios.svg')
+      fetch('layers/armarios.svg')
         .then(response=>{if(!response.ok)throw new Error('Camada vetorial indisponível');return response.text();})
         .then(svg=>{vectorLayer.innerHTML=svg.replace(/^<\?xml[^>]*>\s*/,'');})
         .catch(()=>{vectorLayer.classList.add('is-hidden');vectorToggle.hidden=true;});

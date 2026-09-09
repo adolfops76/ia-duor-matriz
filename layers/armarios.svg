@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42240 15120" data-cad-origin-x="234947.6570666983" data-cad-origin-y="390262.3883530225" data-cad-reference-end-x="245507.6570666983" data-cad-reference-end-y="390262.3883530225" data-pixels-per-unit="4.000000000000" role="img" aria-label="Armários de sinalização">
+<style>
+.armario{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:8}
+.status-existente{stroke:#22c55e;fill:#22c55e}
+.status-implantar{stroke:#ef4444;fill:#ef4444}
+.status-remover{stroke:#facc15;fill:#facc15;stroke-dasharray:28 18}
+.simbolo-texto{font-family:Arial,sans-serif;font-weight:700;paint-order:stroke;stroke-width:1.5}
+.objeto-vetorial{pointer-events:all;cursor:pointer}
+.objeto-vetorial:hover .armario{stroke:#fff;stroke-width:12}
+</style>
+<g id="camada-armarios">
+<g id="armario-1" class="objeto-vetorial tipo-armario status-remover" data-tipo="armario" data-status="remover" data-arm-local="61+103" data-arm-remover="59+388" data-arm-implantar="00+000" data-arm-x="X=236434.7222" data-arm-y="Y=388591.1832">
+<title>Armário — Remover — km 61+103</title>
+<path class="armario status-remover" d="M 5957.69 6685.35 L 5944.38 6676.21 L 5938.84 6684.29 L 5952.14 6693.43 L 5957.69 6685.35 Z"/>
+<text class="simbolo-texto status-remover" x="5956.29" y="6685.94" font-size="7.47" transform="rotate(145.52 5956.29 6685.94)">AR</text>
+<path class="armario status-remover" d="M 5943.91 6666.63 L 5966.8 6682.35 L 5962.48 6688.64 L 5939.59 6672.92 L 5943.91 6666.63 Z"/>
+</g>
+<g id="armario-2" class="objeto-vetorial tipo-armario status-implantar" data-tipo="armario" data-status="implantar" data-arm-local="61+103" data-arm-remover="00+000" data-arm-implantar="59+388" data-arm-x="X=236422.9813" data-arm-y="Y=388576.7306">
+<title>Armário — Implantar — km 61+103</title>
+<path class="armario status-implantar" d="M 5910.72 6743.16 L 5897.42 6734.02 L 5891.87 6742.1 L 5905.17 6751.24 L 5910.72 6743.16 Z"/>
+<text class="simbolo-texto status-implantar" x="5907.45" y="6742.46" font-size="7.47" transform="rotate(145.52 5907.45 6742.46)">AI</text>
+<path class="armario status-implantar" d="M 5887.08 6738.81 L 5909.97 6754.53 L 5905.65 6760.82 L 5882.76 6745.1 L 5887.08 6738.81 Z"/>
+<path class="armario status-implantar" d="M 5887.08 6738.81 L 5909.97 6754.53 L 5905.65 6760.82 L 5882.76 6745.1 L 5887.08 6738.81 Z"/>
+</g>
+<g id="armario-3" class="objeto-vetorial tipo-armario status-remover" data-tipo="armario" data-status="remover" data-arm-local="61+103" data-arm-remover="56+407" data-arm-implantar="57+958" data-arm-x="X=239079.2043" data-arm-y="Y=387899.0694">
+<title>Armário — Remover — km 61+103</title>
+<path class="armario status-remover" d="M 16535.62 9453.54 L 16522.08 9444.78 L 16516.75 9453.01 L 16530.3 9461.77 L 16535.62 9453.54 Z"/>
+<text class="simbolo-texto status-remover" x="16534.24" y="9454.17" font-size="7.47" transform="rotate(147.11 16534.24 9454.17)">AR</text>
+<path class="armario status-remover" d="M 16521.34 9435.22 L 16544.65 9450.29 L 16540.51 9456.7 L 16517.19 9441.62 L 16521.34 9435.22 Z"/>
+</g>
+<g id="armario-4" class="objeto-vetorial tipo-armario status-remover" data-tipo="armario" data-status="remover" data-arm-local="61+103" data-arm-remover="56+407" data-arm-implantar="56+407" data-arm-x="X=239073.3750" data-arm-y="Y=387889.3676">
+<title>Armário — Remover — km 61+103</title>
+<path class="armario status-remover" d="M 16512.31 9492.35 L 16498.76 9483.59 L 16493.44 9491.82 L 16506.99 9500.58 L 16512.31 9492.35 Z"/>
+<text class="simbolo-texto status-remover" x="16510.92" y="9492.98" font-size="7.47" transform="rotate(147.11 16510.92 9492.98)">AR</text>
+<path class="armario status-remover" d="M 16498.02 9474.02 L 16521.33 9489.1 L 16517.19 9495.5 L 16493.88 9480.43 L 16498.02 9474.02 Z"/>
+</g>
+<g id="armario-5" class="objeto-vetorial tipo-armario status-remover" data-tipo="armario" data-status="remover" data-arm-local="61+103" data-arm-remover="56+407" data-arm-implantar="55+283" data-arm-x="X=240087.6109" data-arm-y="Y=387872.0939">
+<title>Armário — Remover — km 61+103</title>
+<path class="armario status-remover" d="M 20565.73 9553.82 L 20550.56 9559.33 L 20553.91 9568.54 L 20569.07 9563.03 L 20565.73 9553.82 Z"/>
+<text class="simbolo-texto status-remover" x="20565.39" y="9555.3" font-size="7.47" transform="rotate(-160.04 20565.39 9555.3)">AR</text>
+<path class="armario status-remover" d="M 20542.49 9554.14 L 20568.59 9544.66 L 20571.19 9551.83 L 20545.1 9561.31 L 20542.49 9554.14 Z"/>
+</g>
+<g id="armario-6" class="objeto-vetorial tipo-armario status-remover" data-tipo="armario" data-status="remover" data-arm-local="61+103" data-arm-remover="55+283" data-arm-implantar="55+489" data-arm-x="X=240080.8206" data-arm-y="Y=387888.5577">
+<title>Armário — Remover — km 61+103</title>
+<path class="armario status-remover" d="M 20538.56 9487.96 L 20523.4 9493.47 L 20526.74 9502.68 L 20541.91 9497.17 L 20538.56 9487.96 Z"/>
+<text class="simbolo-texto status-remover" x="20538.23" y="9489.45" font-size="7.47" transform="rotate(-160.04 20538.23 9489.45)">AR</text>
+<path class="armario status-remover" d="M 20515.33 9488.28 L 20541.42 9478.81 L 20544.03 9485.98 L 20517.93 9495.45 L 20515.33 9488.28 Z"/>
+</g>
+<g id="armario-7" class="objeto-vetorial tipo-armario-duplo status-implantar" data-tipo="armario-duplo" data-status="implantar" data-local="50+388" data-ad-implantar="55+489" data-ad-remover="00+000" data-ad-coordx="X=239914.7144" data-ad-coordy="Y=387812.9342">
+<title>Armário duplo — Implantar — km 50+388</title>
+<text class="simbolo-texto status-implantar" x="19868.72" y="9798" font-size="7.47">ADI</text>
+<path class="armario status-implantar" d="M 19875.23 9790.97 L 19858.25 9796.88 L 19861.21 9805.4 L 19878.19 9799.5 L 19875.23 9790.97 Z"/>
+<path class="armario status-implantar" d="M 19886.27 9803.12 L 19857.4 9813.16 L 19855.39 9807.43 L 19884.27 9797.38 L 19886.27 9803.12 Z"/>
+</g>
+<g id="armario-8" class="objeto-vetorial tipo-armario-duplo status-remover" data-tipo="armario-duplo" data-status="remover" data-local="50+388" data-ad-implantar="55+489" data-ad-remover="55+489" data-ad-coordx="X=239911.9873" data-ad-coordy="Y=387826.4781">
+<title>Armário duplo — Remover — km 50+388</title>
+<text class="simbolo-texto status-remover" x="19857.82" y="9743.82" font-size="7.47">ADR</text>
+<path class="armario status-remover" d="M 19866.36 9736.08 L 19845.9 9743.2 L 19848.87 9751.73 L 19869.33 9744.61 L 19866.36 9736.08 Z"/>
+<path class="armario status-remover" d="M 19870.4 9734.68 L 19841.52 9744.73 L 19839.52 9738.99 L 19868.4 9728.95 L 19870.4 9734.68 Z"/>
+</g>
+<g id="armario-9" class="objeto-vetorial tipo-armario-duplo status-implantar" data-tipo="armario-duplo" data-status="implantar" data-local="50+388" data-ad-implantar="57+958" data-ad-remover="00+000" data-ad-coordx="X=237779.9203" data-ad-coordy="Y=388460.2170">
+<title>Armário duplo — Implantar — km 50+388</title>
+<text class="simbolo-texto status-implantar" x="11329.5" y="7208.95" font-size="7.47">ADI</text>
+<path class="armario status-implantar" d="M 11337.15 7203.19 L 11319.4 7205.99 L 11320.8 7214.9 L 11338.56 7212.11 L 11337.15 7203.19 Z"/>
+<path class="armario status-implantar" d="M 11345.87 7217.11 L 11315.66 7221.86 L 11314.71 7215.86 L 11344.92 7211.11 L 11345.87 7217.11 Z"/>
+</g>
+<g id="armario-10" class="objeto-vetorial tipo-armario-duplo status-remover" data-tipo="armario-duplo" data-status="remover" data-local="50+388" data-ad-implantar="55+489" data-ad-remover="57+958" data-ad-coordx="X=237777.9670" data-ad-coordy="Y=388472.4769">
+<title>Armário duplo — Remover — km 50+388</title>
+<text class="simbolo-texto status-remover" x="11321.7" y="7159.91" font-size="7.47">ADR</text>
+<path class="armario status-remover" d="M 11331.48 7153.82 L 11310.08 7157.18 L 11311.48 7166.1 L 11332.88 7162.73 L 11331.48 7153.82 Z"/>
+<path class="armario status-remover" d="M 11335.7 7153.15 L 11305.5 7157.9 L 11304.55 7151.9 L 11334.75 7147.15 L 11335.7 7153.15 Z"/>
+</g>
+<g id="armario-11" class="objeto-vetorial tipo-armario-duplo status-implantar" data-tipo="armario-duplo" data-status="implantar" data-local="50+388" data-ad-implantar="56+768" data-ad-remover="00+000" data-ad-coordx="X=238797.3007" data-ad-coordy="Y=388108.1580">
+<title>Armário duplo — Implantar — km 50+388</title>
+<text class="simbolo-texto status-implantar" x="15398.57" y="8617.44" font-size="7.47">ADI</text>
+<path class="armario status-implantar" d="M 15407.41 8621.12 L 15396.01 8607.23 L 15389.03 8612.96 L 15400.44 8626.85 L 15407.41 8621.12 Z"/>
+<path class="armario status-implantar" d="M 15399.83 8635.69 L 15380.43 8612.05 L 15385.12 8608.19 L 15404.52 8631.83 L 15399.83 8635.69 Z"/>
+</g>
+<g id="armario-12" class="objeto-vetorial tipo-armario-duplo status-remover" data-tipo="armario-duplo" data-status="remover" data-local="50+388" data-ad-implantar="55+489" data-ad-remover="56+768" data-ad-coordx="X=238806.4357" data-ad-coordy="Y=388115.5174">
+<title>Armário duplo — Remover — km 50+388</title>
+<text class="simbolo-texto status-remover" x="15435.12" y="8588.01" font-size="7.47">ADR</text>
+<path class="armario status-remover" d="M 15445.27 8593.46 L 15431.69 8576.58 L 15424.65 8582.24 L 15438.24 8599.12 L 15445.27 8593.46 Z"/>
+<path class="armario status-remover" d="M 15447.95 8596.78 L 15428.78 8572.97 L 15433.5 8569.15 L 15452.68 8592.97 L 15447.95 8596.78 Z"/>
+</g>
+<g id="armario-13" class="objeto-vetorial tipo-armario-duplo status-implantar" data-tipo="armario-duplo" data-status="implantar" data-local="50+388" data-ad-implantar="54+187" data-ad-remover="00+000" data-ad-coordx="X=240956.7507" data-ad-coordy="Y=388552.5908">
+<title>Armário duplo — Implantar — km 50+388</title>
+<text class="simbolo-texto status-implantar" x="24036.89" y="6839.1" font-size="7.47">ADI</text>
+<path class="armario status-implantar" d="M 24038.88 6829.73 L 24027.32 6843.5 L 24034.24 6849.3 L 24045.79 6835.53 L 24038.88 6829.73 Z"/>
+<path class="armario status-implantar" d="M 24054.59 6834.5 L 24034.93 6857.92 L 24030.28 6854.02 L 24049.93 6830.6 L 24054.59 6834.5 Z"/>
+</g>
+<g id="armario-14" class="objeto-vetorial tipo-armario-duplo status-remover" data-tipo="armario-duplo" data-status="remover" data-local="50+388" data-ad-implantar="55+489" data-ad-remover="54+187" data-ad-coordx="X=240947.5967" data-ad-coordy="Y=388560.2242">
+<title>Armário duplo — Remover — km 50+388</title>
+<text class="simbolo-texto status-remover" x="24000.28" y="6808.55" font-size="7.47">ADR</text>
+<path class="armario status-remover" d="M 24003.65 6797.54 L 23989.73 6814.13 L 23996.64 6819.93 L 24010.57 6803.34 L 24003.65 6797.54 Z"/>
+<path class="armario status-remover" d="M 24006.4 6794.26 L 23986.74 6817.68 L 23982.09 6813.79 L 24001.74 6790.36 L 24006.4 6794.26 Z"/>
+</g>
+<g id="armario-15" class="objeto-vetorial tipo-armario status-implantar" data-tipo="armario" data-status="implantar" data-arm-local="61+103" data-arm-remover="00+000" data-arm-implantar="59+654" data-arm-x="X=236403.5687" data-arm-y="Y=388589.5244">
+<title>Armário — Implantar — km 61+103</title>
+<path class="armario status-implantar" d="M 5833.06 6692.16 L 5819.93 6682.78 L 5814.23 6690.75 L 5827.36 6700.13 L 5833.06 6692.16 Z"/>
+<text class="simbolo-texto status-implantar" x="5829.8" y="6691.4" font-size="7.47" transform="rotate(144.45 5829.8 6691.4)">AI</text>
+<path class="armario status-implantar" d="M 5809.5 6687.37 L 5832.09 6703.51 L 5827.65 6709.72 L 5805.07 6693.58 L 5809.5 6687.37 Z"/>
+<path class="armario status-implantar" d="M 5809.5 6687.37 L 5832.09 6703.51 L 5827.65 6709.72 L 5805.07 6693.58 L 5809.5 6687.37 Z"/>
+</g>
+<g id="armario-16" class="objeto-vetorial tipo-armario status-remover" data-tipo="armario" data-status="remover" data-arm-local="61+103" data-arm-remover="59+654" data-arm-implantar="59+654" data-arm-x="X=236414.6164" data-arm-y="Y=388605.9196">
+<title>Armário — Remover — km 61+103</title>
+<path class="armario status-remover" d="M 5877.26 6626.4 L 5863.96 6617.27 L 5858.41 6625.35 L 5871.71 6634.48 L 5877.26 6626.4 Z"/>
+<text class="simbolo-texto status-remover" x="5875.86" y="6626.99" font-size="7.47" transform="rotate(145.52 5875.86 6626.99)">AR</text>
+<path class="armario status-remover" d="M 5863.49 6607.69 L 5886.37 6623.4 L 5882.05 6629.69 L 5859.17 6613.98 L 5863.49 6607.69 Z"/>
+</g>
+<g id="armario-17" class="objeto-vetorial tipo-armario-duplo status-implantar" data-tipo="armario-duplo" data-status="implantar" data-local="50+388" data-ad-implantar="52+961" data-ad-remover="00+000" data-ad-coordx="X=241771.6157" data-ad-coordy="Y=388144.4680">
+<title>Armário duplo — Implantar — km 50+388</title>
+<text class="simbolo-texto status-implantar" x="27295.76" y="8472.2" font-size="7.47">ADI</text>
+<path class="armario status-implantar" d="M 27304.02 8477.05 L 27294.61 8461.73 L 27286.92 8466.46 L 27296.33 8481.77 L 27304.02 8477.05 Z"/>
+<path class="armario status-implantar" d="M 27294.52 8490.44 L 27278.52 8464.39 L 27283.7 8461.2 L 27299.7 8487.26 L 27294.52 8490.44 Z"/>
+</g>
+<g id="armario-18" class="objeto-vetorial tipo-armario-duplo status-remover" data-tipo="armario-duplo" data-status="remover" data-local="50+388" data-ad-implantar="55+489" data-ad-remover="52+961" data-ad-coordx="X=241781.8297" data-ad-coordy="Y=388150.2765">
+<title>Armário duplo — Remover — km 50+388</title>
+<text class="simbolo-texto status-remover" x="27336.62" y="8448.97" font-size="7.47">ADR</text>
+<path class="armario status-remover" d="M 27346.01 8455.66 L 27334.67 8437.2 L 27326.98 8441.92 L 27338.32 8460.38 L 27346.01 8455.66 Z"/>
+<path class="armario status-remover" d="M 27348.25 8459.3 L 27332.24 8433.25 L 27337.42 8430.06 L 27353.42 8456.11 L 27348.25 8459.3 Z"/>
+</g>
+</g>
+</svg>
