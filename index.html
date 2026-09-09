@@ -130,6 +130,37 @@
     .controls button:hover { background: rgba(255,255,255,.2); }
     .controls button[aria-pressed="true"] { background: rgba(14,165,233,.35); color: #e0f2fe; }
     #zoomLabel { min-width: 54px; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .sector-controls {
+      position: fixed;
+      top: 46px;
+      left: 58px;
+      z-index: 22;
+      display: flex;
+      gap: 6px;
+      max-width: calc(100vw - 74px);
+      padding: 6px;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 12px;
+      background: rgba(17,24,39,.86);
+      box-shadow: 0 8px 28px rgba(0,0,0,.3);
+      backdrop-filter: blur(8px);
+      scrollbar-width: none;
+    }
+    .sector-controls::-webkit-scrollbar { display: none; }
+    .sector-controls button {
+      min-width: max-content;
+      height: 38px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 8px;
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.9);
+      font: 650 14px/1 system-ui, sans-serif;
+      cursor: pointer;
+    }
+    .sector-controls button:hover { background: rgba(255,255,255,.2); }
+    .sector-controls button[aria-pressed="true"] { background: #0284c7; color: #fff; }
     .hint {
       position: fixed;
       left: 16px;
@@ -145,7 +176,12 @@
       pointer-events: none;
       backdrop-filter: blur(8px);
     }
-    @media (max-width: 700px) { .hint { display: none; } .controls { right: 10px; bottom: 10px; } }
+    @media (max-width: 700px) {
+      .hint { display: none; }
+      .controls { right: 10px; bottom: 10px; }
+      .sector-controls { top: 42px; left: 52px; max-width: calc(100vw - 62px); }
+      .sector-controls button { height: 36px; padding: 0 12px; }
+    }
   </style>
 </head>
 <body>
@@ -157,6 +193,12 @@
       <div id="vectorLayer" class="vector-overlay" aria-label="Camada vetorial de dutos e armários"></div>
     </section>
   </main>
+  <nav class="sector-controls" aria-label="Navegação por setores da matriz">
+    <button type="button" data-view="sector-1" aria-pressed="false">01–08</button>
+    <button type="button" data-view="sector-2" aria-pressed="false">09–15</button>
+    <button type="button" data-view="sector-3" aria-pressed="false">16–22</button>
+    <button type="button" data-view="full" aria-pressed="true">Mapa completo</button>
+  </nav>
   <div class="hint">Arraste para mover. Roda do mouse percorre a planta; Ctrl + roda aplica zoom. No celular, use um dedo para mover e dois para ampliar.</div>
   <nav class="controls" aria-label="Controles de zoom">
     <button id="zoomOut" type="button" aria-label="Diminuir zoom">−</button>
@@ -174,6 +216,7 @@
       const vectorToggle = document.getElementById('vectorToggle');
       const columnLabels = document.getElementById('columnLabels');
       const rowLabels = document.getElementById('rowLabels');
+      const sectorButtons = Array.from(document.querySelectorAll('.sector-controls [data-view]'));
       const axisWidth = 46, axisHeight = 34;
       const columnLabelElements = Array.from({length:22},(_,index)=>{
         const label=document.createElement('div');
@@ -216,7 +259,15 @@
         .then(response=>{if(!response.ok)throw new Error('Camada vetorial indisponível');return response.text();})
         .then(svg=>{vectorLayer.innerHTML=svg.replace(/^<\?xml[^>]*>\s*/,'');})
         .catch(()=>{vectorLayer.classList.add('is-hidden');vectorToggle.hidden=true;});
-      const mapWidth=42240, mapHeight=15120; let scale=1,x=0,y=0,dragging=false,startX=0,startY=0,originX=0,originY=0,pinchDistance=0,pinchScale=1,pinchCenter=null;
+      const mapWidth=42240, mapHeight=15120;
+      const views={
+        'sector-1':{start:0,end:8},
+        'sector-2':{start:8,end:15},
+        'sector-3':{start:15,end:22},
+        full:{start:0,end:22}
+      };
+      const savedViews={};
+      let activeView='full',scale=1,x=0,y=0,dragging=false,startX=0,startY=0,originX=0,originY=0,pinchDistance=0,pinchScale=1,pinchCenter=null;
       const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
       function bounds(){const width=mapWidth*scale,height=mapHeight*scale;return{minX:Math.min(0,viewport.clientWidth-width),maxX:Math.max(0,(viewport.clientWidth-width)/2),minY:Math.min(0,viewport.clientHeight-height),maxY:Math.max(0,(viewport.clientHeight-height)/2)}}
       function updateAxisLabels(){
@@ -236,6 +287,26 @@
       }
       function render(){const b=bounds();x=clamp(x,b.minX,b.maxX);y=clamp(y,b.minY,b.maxY);matrix.style.transform=`translate3d(${x}px, ${y}px, 0) scale(${scale})`;zoomLabel.textContent=`${Math.round(scale*100)}%`;updateAxisLabels();}
       function fit(){scale=clamp(Math.min(viewport.clientWidth/mapWidth,viewport.clientHeight/mapHeight),0.02,4);x=(viewport.clientWidth-mapWidth*scale)/2;y=(viewport.clientHeight-mapHeight*scale)/2;render();}
+      function updateSectorButtons(){sectorButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.view===activeView)));}
+      function openView(viewName,forceFit=false){
+        if(!views[viewName])return;
+        savedViews[activeView]={scale,x,y};
+        activeView=viewName;
+        if(!forceFit&&savedViews[viewName]){
+          ({scale,x,y}=savedViews[viewName]);
+        }else if(viewName==='full'){
+          scale=clamp(Math.min(viewport.clientWidth/mapWidth,viewport.clientHeight/mapHeight),0.02,4);
+          x=(viewport.clientWidth-mapWidth*scale)/2;
+          y=(viewport.clientHeight-mapHeight*scale)/2;
+        }else{
+          const view=views[viewName],startX=view.start*1920,endX=view.end*1920,sectorWidth=endX-startX;
+          const previousMapCenterY=(viewport.clientHeight/2-y)/scale;
+          scale=clamp((viewport.clientWidth-72)/sectorWidth,0.02,4);
+          x=viewport.clientWidth/2-(startX+sectorWidth/2)*scale;
+          y=viewport.clientHeight/2-previousMapCenterY*scale;
+        }
+        updateSectorButtons();render();
+      }
       function zoomAt(nextScale,clientX,clientY){nextScale=clamp(nextScale,0.02,4);const mapX=(clientX-x)/scale,mapY=(clientY-y)/scale;x=clientX-mapX*nextScale;y=clientY-mapY*nextScale;scale=nextScale;render();}
       viewport.addEventListener('pointerdown',event=>{if(event.pointerType==='touch')return;dragging=true;startX=event.clientX;startY=event.clientY;originX=x;originY=y;viewport.classList.add('dragging');viewport.setPointerCapture(event.pointerId);});
       viewport.addEventListener('pointermove',event=>{if(!dragging||event.pointerType==='touch')return;x=originX+event.clientX-startX;y=originY+event.clientY-startY;render();});
@@ -246,7 +317,9 @@
       viewport.addEventListener('touchend',event=>{if(event.touches.length===0){dragging=false;pinchDistance=0;pinchCenter=null;}if(event.touches.length===1){dragging=true;startX=event.touches[0].clientX;startY=event.touches[0].clientY;originX=x;originY=y;}},{passive:false});
       document.getElementById('zoomIn').addEventListener('click',()=>zoomAt(scale*1.25,viewport.clientWidth/2,viewport.clientHeight/2));
       document.getElementById('zoomOut').addEventListener('click',()=>zoomAt(scale/1.25,viewport.clientWidth/2,viewport.clientHeight/2));
-      document.getElementById('fit').addEventListener('click',fit); window.addEventListener('resize',fit); fit();
+      document.getElementById('fit').addEventListener('click',()=>openView(activeView,true));
+      sectorButtons.forEach(button=>button.addEventListener('click',()=>openView(button.dataset.view)));
+      window.addEventListener('resize',()=>openView(activeView,true)); fit();
       vectorToggle.addEventListener('click',()=>{
         const hidden=vectorLayer.classList.toggle('is-hidden');
         vectorToggle.setAttribute('aria-pressed',String(!hidden));
